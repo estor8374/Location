@@ -1,0 +1,58 @@
+<!-- share.html --><!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share Location</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Share Your Location</h2>
+    <p>If you allow, your location will be shared with the requester.</p>
+    <button id="shareBtn">Share Location</button>
+    <p id="status"></p>
+  </div>  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { firebaseConfig } from './firebase-config.js';
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const from = params.get("from");
+    const to = params.get("to");
+
+    const shareBtn = document.getElementById('shareBtn');
+    const status = document.getElementById('status');
+
+    shareBtn.onclick = () => {
+      if (!navigator.geolocation) {
+        status.textContent = "Geolocation is not supported by your browser.";
+        return;
+      }
+
+      shareBtn.disabled = true;
+      status.textContent = "Getting your location...";
+
+      navigator.geolocation.getCurrentPosition(position => {
+        const { latitude, longitude } = position.coords;
+        const timestamp = new Date().toISOString();
+
+        set(ref(db, `sharedLocations/${token}`), {
+          from,
+          to,
+          latitude,
+          longitude,
+          timestamp
+        });
+
+        status.textContent = "✅ Location shared successfully.";
+      }, error => {
+        status.textContent = "❌ Failed to get location: " + error.message;
+        shareBtn.disabled = false;
+      });
+    };
+  </script></body>
+</html>
