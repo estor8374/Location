@@ -1,0 +1,63 @@
+<!-- request.html --><!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Location Request</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Send Location Request via Link</h2>
+    <input type="email" id="yourEmail" placeholder="Your Email" />
+    <input type="email" id="targetEmail" placeholder="Receiver's Email" />
+    <button id="generateBtn">Generate Link</button><div id="linkBox" style="display:none;">
+  <p>Copy and send this link:</p>
+  <input type="text" id="shareLink" readonly />
+  <button id="sendWhatsapp">Send via WhatsApp</button>
+</div>
+
+  </div>  <script type="module">
+    import { firebaseConfig } from './firebase-config.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const yourEmail = document.getElementById('yourEmail');
+    const targetEmail = document.getElementById('targetEmail');
+    const generateBtn = document.getElementById('generateBtn');
+    const linkBox = document.getElementById('linkBox');
+    const shareLink = document.getElementById('shareLink');
+    const sendWhatsapp = document.getElementById('sendWhatsapp');
+
+    generateBtn.onclick = () => {
+      const sender = yourEmail.value.trim().replace(/\./g, '_');
+      const receiver = targetEmail.value.trim().replace(/\./g, '_');
+
+      if (!sender || !receiver) return alert('Enter both emails');
+
+      const token = Math.random().toString(36).substring(2);
+      const link = `${location.origin}/share.html?token=${token}&from=${sender}&to=${receiver}`;
+
+      // Save request info to DB (optional)
+      set(ref(db, `linkRequests/${token}`), {
+        from: sender,
+        to: receiver,
+        createdAt: new Date().toISOString()
+      });
+
+      shareLink.value = link;
+      linkBox.style.display = 'block';
+
+      sendWhatsapp.onclick = () => {
+        const msg = `Hi, please share your location by clicking this secure link: ${link}`;
+        const encoded = encodeURIComponent(msg);
+        const phone = prompt("Enter WhatsApp number with country code:");
+        if (phone) {
+          window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
+        }
+      }
+    };
+  </script></body>
+</html>
