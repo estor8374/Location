@@ -1,0 +1,57 @@
+<!-- view.html --><!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Location</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Track Shared Location</h2>
+    <input type="text" id="tokenInput" placeholder="Enter Token" />
+    <button id="trackBtn">Track Location</button><div id="result" style="display:none; margin-top:20px;">
+  <p><strong>From:</strong> <span id="from"></span></p>
+  <p><strong>To:</strong> <span id="to"></span></p>
+  <p><strong>Latitude:</strong> <span id="lat"></span></p>
+  <p><strong>Longitude:</strong> <span id="lng"></span></p>
+  <p><strong>Time:</strong> <span id="time"></span></p>
+</div>
+
+  </div>  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { firebaseConfig } from './firebase-config.js';
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const tokenInput = document.getElementById('tokenInput');
+    const trackBtn = document.getElementById('trackBtn');
+    const result = document.getElementById('result');
+    const from = document.getElementById('from');
+    const to = document.getElementById('to');
+    const lat = document.getElementById('lat');
+    const lng = document.getElementById('lng');
+    const time = document.getElementById('time');
+
+    trackBtn.onclick = () => {
+      const token = tokenInput.value.trim();
+      if (!token) return alert("Please enter a token");
+
+      const locRef = ref(db, `sharedLocations/${token}`);
+      onValue(locRef, snapshot => {
+        const data = snapshot.val();
+        if (!data) {
+          alert("No location data found.");
+          return;
+        }
+        result.style.display = 'block';
+        from.textContent = data.from;
+        to.textContent = data.to;
+        lat.textContent = data.latitude;
+        lng.textContent = data.longitude;
+        time.textContent = new Date(data.timestamp).toLocaleString();
+      });
+    };
+  </script></body>
+</html>
